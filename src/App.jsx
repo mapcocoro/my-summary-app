@@ -11,7 +11,7 @@ function App() {
 
   // RenderでデプロイしたバックエンドAPIのURL
   // ここにあなたのRenderサービスのURLを貼り付けます
-  const RENDER_BACKEND_URL = 'https://my-summary-app.onrender.com'; // ★あなたのRenderサービスのURLに置き換えてください (修正済み)
+  const RENDER_BACKEND_URL = 'https://my-summary-app.onrender.com'; // ★あなたのRenderサービスのURLに置き換えてください
 
   // 要約ボタンがクリックされたときの処理
   const handleSummarize = async () => {
@@ -55,7 +55,12 @@ function App() {
 
       // 応答から要約結果を取得
       const data = await response.json();
-      setSummary(data.summary); // 要約結果をStateにセットして表示を更新
+      const summaryText = data.summary;
+
+      console.log('Summarization successful with OpenAI:', summaryText);
+
+      // 要約結果をStateにセットして表示を更新
+      setSummary(summaryText);
 
     } catch (error) {
       console.error('要約エラー:', error);
@@ -67,26 +72,40 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10">
-      <h1 className="text-3xl font-bold text-gray-800 mb-8">テキスト要約ツール</h1>
+    // 背景色を淡いピンクに変更し、全体的に丸みを持たせる
+    <div className="min-h-screen bg-pink-50 flex flex-col items-center py-10 px-4 sm:px-6 lg:px-8">
+      <div className="text-center mb-8">
+        {/* メインタイトル */}
+        <h1 className="text-4xl sm:text-5xl font-bold text-pink-700 mb-2">
+          きゅっ！と　まとめnote
+        </h1>
+        {/* サブタイトル */}
+        <p className="text-lg sm:text-xl text-gray-700">
+          言いたいことがまとまる！伝わる！
+        </p>
+      </div>
 
-      <div className="w-full max-w-2xl bg-white p-8 rounded-lg shadow-md">
+      {/* コンテナのデザインを調整 */}
+      <div className="w-full max-w-2xl bg-white p-6 sm:p-8 rounded-xl shadow-lg">
         {/* テキスト入力エリア */}
         <textarea
-          className="w-full h-40 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4 resize-none"
+          className="w-full h-40 p-3 border border-pink-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300 mb-4 resize-none text-gray-800 placeholder-gray-400"
           placeholder="ここに要約したいテキストを入力してください..."
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           disabled={loading} // 要約中は入力を無効化
+          style={{ fontFamily: 'Arial, sans-serif' }} // フォントを調整したい場合はここを変更
         ></textarea>
 
         {/* 要約ボタン */}
         <button
-          className={`w-full px-4 py-2 text-white font-semibold rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+          className={`w-full px-4 py-3 text-white font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition duration-200 ease-in-out
+            ${
             loading
               ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500'
-          }`}
+              : 'bg-pink-500 hover:bg-pink-600 focus:ring-pink-400'
+            }
+          `}
           onClick={handleSummarize}
           disabled={loading} // 要約中はボタンを無効化
         >
@@ -95,14 +114,16 @@ function App() {
 
         {/* 要約結果表示エリア */}
         {summary && ( // summaryが存在する場合のみ表示
-          <div className="mt-6 p-4 bg-gray-50 rounded-md border border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-700 mb-2">要約結果:</h2>
-            <p className="text-gray-800 whitespace-pre-wrap">{summary}</p> {/* whitespace-pre-wrap で改行を保持 */}
+          <div className="mt-6 p-4 sm:p-6 bg-pink-100 rounded-lg border border-pink-200 shadow-inner">
+            <h2 className="text-xl font-semibold text-pink-700 mb-3">要約結果:</h2>
+            <p className="text-gray-800 whitespace-pre-wrap" style={{ fontFamily: 'Arial, sans-serif' }}>{summary}</p> {/* whitespace-pre-wrap で改行を保持 */}
           </div>
         )}
       </div>
+       {/* フッターなどを追加する場合はここ */}
     </div>
   );
 }
 
 export default App;
+

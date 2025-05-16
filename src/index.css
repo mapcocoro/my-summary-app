@@ -1,3 +1,49 @@
+/* Tailwind CSS の基本スタイルを読み込む */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+ここにカスタムCSSを追加できます。
+例えば、特定の要素にTailwindクラスだけでは表現できないスタイルを適用する場合など。
+ただし、可能な限りTailwindクラスを使用することが推奨されます。
+*/
+
+/* 例: bodyのデフォルトマージンを削除 */
+body {
+  margin: 0;
+  padding: 0;
+  /* アプリケーション全体で使うデフォルトフォントを設定する場合 */
+  /* font-family: 'Noto Sans JP', sans-serif; */
+}
+
+/*
+もしGoogle Fontsなど外部フォントを使う場合は、
+index.htmlの<head>タグ内に<link>タグを追加してください。
+*/
+
+/*
+可愛らしいデザインのための追加スタイル例（Tailwindクラスで可能なものはApp.jsxに記述）
+*/
+
+/* 要約結果エリアのスクロールバーをカスタマイズする場合など */
+/*
+.summary-output {
+  max-height: 200px;
+  overflow-y: auto;
+  scrollbar-width: thin; // Firefox
+  scrollbar-color: #f472b6 #fbcfe4; // Firefox
+}
+.summary-output::-webkit-scrollbar {
+  width: 8px;
+}
+.summary-output::-webkit-scrollbar-track {
+  background: #fbcfe4; // 薄いピンク
+  border-radius: 10px;
+}
+.summary-output::-webkit-scrollbar-thumb {
+  background-color: #f472b6; // 濃いピンク
+  border-radius: 10px;
+  border: 2px solid #fbcfe4;
+}
+*/
