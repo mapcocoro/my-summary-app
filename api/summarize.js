@@ -17,7 +17,7 @@ export default async function handler(request, response) {
   
     // 使用するHugging FaceのモデルとAPIエンドポイントURL
     // summarization モデルの例: bart-large-cnn
-    const modelId = "bart-large-cnn"; // 他の要約モデルを使いたい場合はここを変更
+    const modelId = "sshleifer/distilbart-cnn-12-6"; // 他の要約モデルを使いたい場合はここを変更
     const apiUrl = `https://api-inference.huggingface.co/models/${modelId}`;
   
     try {
