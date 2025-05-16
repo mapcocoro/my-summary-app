@@ -54,19 +54,19 @@ export default async function handler(request, response) {
     response.status(200).json({ summary: summaryText }); // フロントエンドは { summary: "..." } の形式を期待している
 
   } catch (error) {
+    // Netlifyのログにエラーの詳細を出力します
     console.error('OpenAI API Call Error:', error);
-    // エラーの詳細をログに出力
-    if (error.response) {
-      console.error('OpenAI API Response Data:', error.response.data);
-      console.error('OpenAI API Response Status:', error.response.status);
-      console.error('OpenAI API Response Headers:', error.response.headers);
+    // OpenAI APIからのエラー応答の詳細があればログ出力（デバッグ用）
+    if (error.message) console.error('Error Message:', error.message);
+    if (error.status) console.error('Error Status:', error.status); // エラーオブジェクトに直接statusがある場合
+    if (error.code) console.error('Error Code:', error.code); // エラーオブジェクトに直接codeがある場合
+    if (error.response && error.response.data) {
+        console.error('OpenAI API Response Data (if available):', error.response.data);
     }
-    // フロントエンドにエラーを返す
+    // フロントエンドには一般的なエラーメッセージを返します
     response.status(500).json({
-      message: 'サーバー側でエラーが発生しました。OpenAI API呼び出し中に問題がありました。',
-      error: error.message,
-      // デバッグ用にOpenAIからのエラー詳細を含める（本番環境では非推奨の場合あり）
-      // apiResponse: error.response ? error.response.data : null,
-    });
-  }
+        message: 'サーバー側でエラーが発生しました。要約できませんでした。',
+        error: error.message || 'Unknown error', // エラーメッセージをフロントエンドに渡す
+      });
+    }
 }
