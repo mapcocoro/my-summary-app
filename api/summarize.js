@@ -1,19 +1,38 @@
 import OpenAI from 'openai'; // OpenAIライブラリをインポート
 
+// Netlify Functions のエントリポイント
 export default async function handler(request, response) {
   // POSTメソッド以外でのリクエストは受け付けない
   if (request.method !== 'POST') {
-    return response.status(405).json({ message: 'Method Not Allowed' });
+    // Netlify Functionsでは、responseオブジェクトがVercel Functionsとは異なる形式の場合があります。
+    // 互換性を考慮し、statusとjsonメソッドが存在するか確認して呼び出します。
+    if (response && typeof response.status === 'function' && typeof response.json === 'function') {
+      return response.status(405).json({ message: 'Method Not Allowed' });
+    } else {
+      // もしresponseオブジェクトの形式が異なる場合は、代替手段でエラーを返します
+      console.error('Netlify Function response object has unexpected format.');
+      return {
+        statusCode: 405,
+        body: JSON.stringify({ message: 'Method Not Allowed' }),
+      };
+    }
   }
 
   // 環境変数からOpenAI APIトークンを取得
-  // Vercelの設定画面で OPENAI_API_KEY という名前で設定します
+  // Netlifyの設定画面で OPENAI_API_KEY という名前で設定します
   const openaiApiKey = process.env.OPENAI_API_KEY;
 
   // APIキーが設定されていない場合はエラー
   if (!openaiApiKey) {
     console.error('OPENAI_API_KEY is not set.');
-    return response.status(500).json({ message: 'サーバー設定エラー: OpenAI APIキーが設定されていません。' });
+     if (response && typeof response.status === 'function' && typeof response.json === 'function') {
+       return response.status(500).json({ message: 'サーバー設定エラー: OpenAI APIキーが設定されていません。' });
+     } else {
+       return {
+         statusCode: 500,
+         body: JSON.stringify({ message: 'サーバー設定エラー: OpenAI APIキーが設定されていません。' }),
+       };
+     }
   }
 
   // OpenAIクライアントを初期化
@@ -23,11 +42,21 @@ export default async function handler(request, response) {
 
   try {
     // フロントエンドから送られてくるテキストを取得
-    const { text } = request.body;
+    // Netlify Functionsでは、request.bodyが文字列の場合があるため、JSON.parseでパースします。
+    const requestBody = typeof request.body === 'string' ? JSON.parse(request.body) : request.body;
+    const { text } = requestBody;
+
 
     // テキストが空の場合はエラーを返す
     if (!text) {
-      return response.status(400).json({ message: '要約するテキストがありません。' });
+       if (response && typeof response.status === 'function' && typeof response.json === 'function') {
+         return response.status(400).json({ message: '要約するテキストがありません。' });
+       } else {
+         return {
+           statusCode: 400,
+           body: JSON.stringify({ message: '要約するテキストがありません。' }),
+         };
+       }
     }
 
     console.log('Received text for summarization:', text);
@@ -51,7 +80,16 @@ export default async function handler(request, response) {
     console.log('Summarization successful with OpenAI:', summaryText);
 
     // 要約結果をフロントエンドに返す
-    response.status(200).json({ summary: summaryText }); // フロントエンドは { summary: "..." } の形式を期待している
+     if (response && typeof response.status === 'function' && typeof response.json === 'function') {
+       return response.status(200).json({ summary: summaryText }); // フロントエンドは { summary: "..." } の形式を期待している
+     } else {
+       // Netlify Functionsの標準的な応答形式で返します
+       return {
+         statusCode: 200,
+         body: JSON.stringify({ summary: summaryText }),
+       };
+     }
+
 
   } catch (error) {
     // Netlifyのログにエラーの詳細を出力します
@@ -63,10 +101,21 @@ export default async function handler(request, response) {
     if (error.response && error.response.data) {
         console.error('OpenAI API Response Data (if available):', error.response.data);
     }
+
     // フロントエンドには一般的なエラーメッセージを返します
-    response.status(500).json({
-        message: 'サーバー側でエラーが発生しました。要約できませんでした。',
-        error: error.message || 'Unknown error', // エラーメッセージをフロントエンドに渡す
-      });
-    }
+     if (response && typeof response.status === 'function' && typeof response.json === 'function') {
+       response.status(500).json({
+           message: 'サーバー側でエラーが発生しました。要約できませんでした。',
+           error: error.message || 'Unknown error', // エラーメッセージをフロントエンドに渡す
+         });
+     } else {
+       return {
+         statusCode: 500,
+         body: JSON.stringify({
+           message: 'サーバー側でエラーが発生しました。要約できませんでした。',
+           error: error.message || 'Unknown error',
+         }),
+       };
+     }
+  }
 }

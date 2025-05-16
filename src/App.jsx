@@ -9,8 +9,7 @@ function App() {
   // 要約中かどうかを示すState (処理中にボタンを無効化するためなど)
   const [loading, setLoading] = useState(false);
 
-  // 要約ボタンがクリックされたときの処理 (この中身は後でVercel Functionsとの連携で作ります)
-
+  // 要約ボタンがクリックされたときの処理
   const handleSummarize = async () => {
     // 入力テキストが空の場合は何もしない、または警告を出す
     if (!inputText.trim()) {
@@ -23,7 +22,8 @@ function App() {
 
     try {
       // Netlify Functions の summarize エンドポイントを呼び出すパスに変更
-      const response = await fetch('/.netlify/functions/summarize', { // ここを修正
+      // Vercel の場合は '/api/summarize' でしたが、Netlifyではパスが異なります。
+      const response = await fetch('/.netlify/functions/summarize', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -32,10 +32,10 @@ function App() {
         body: JSON.stringify({ text: inputText }),
       });
 
-
       // 応答が正常でなかった場合のエラーハンドリング
       if (!response.ok) {
         const errorData = await response.json();
+        // バックエンドから返されたエラーメッセージがあればそれを使用
         throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
       }
 
