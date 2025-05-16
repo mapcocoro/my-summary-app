@@ -9,6 +9,11 @@ function App() {
   // 要約中かどうかを示すState (処理中にボタンを無効化するためなど)
   const [loading, setLoading] = useState(false);
 
+  // RenderでデプロイしたバックエンドAPIのURL
+  // https://my-summary-app.onrender.com
+  // 例: const RENDER_BACKEND_URL = 'https://my-summary-app-backend.render.com';
+  const RENDER_BACKEND_URL = 'YOUR_RENDER_SERVICE_URL_HERE'; // <--- ここをあなたのRenderサービスのURLに置き換える！
+
   // 要約ボタンがクリックされたときの処理
   const handleSummarize = async () => {
     // 入力テキストが空の場合は何もしない、または警告を出す
@@ -17,16 +22,25 @@ function App() {
       return;
     }
 
+    // RenderサービスのURLが設定されているか確認
+    if (RENDER_BACKEND_URL === 'YOUR_RENDER_SERVICE_URL_HERE' || !RENDER_BACKEND_URL) {
+        alert('RenderサービスのURLが設定されていません。src/App.jsx を確認してください。');
+        console.error('Render backend URL is not set in src/App.jsx');
+        return;
+    }
+
+
     setLoading(true); // 要約処理開始フラグをオン
     setSummary(''); // 前回の要約結果をクリア
 
     try {
-      // Netlify Functions の summarize エンドポイントを呼び出すパスに変更
-      // Vercel の場合は '/api/summarize' でしたが、Netlifyではパスが異なります。
-      const response = await fetch('/.netlify/functions/summarize', {
+      // RenderでデプロイしたバックエンドAPIの /summarize エンドポイントを呼び出す
+      // RenderサービスのURLと /summarize パスを結合します。
+      const response = await fetch(`${RENDER_BACKEND_URL}/summarize`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          // CORSが有効になっていれば、Originヘッダーは自動的にブラウザが付加します。
         },
         // 入力テキストをリクエストのbodyに含めて送信
         body: JSON.stringify({ text: inputText }),
@@ -34,6 +48,7 @@ function App() {
 
       // 応答が正常でなかった場合のエラーハンドリング
       if (!response.ok) {
+        // バックエンドからエラー応答（JSON形式を期待）
         const errorData = await response.json();
         // バックエンドから返されたエラーメッセージがあればそれを使用
         throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
