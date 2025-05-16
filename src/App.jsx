@@ -10,10 +10,10 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   // RenderでデプロイしたバックエンドAPIのURL
-  // https://my-summary-app.onrender.com
-  // 例: const RENDER_BACKEND_URL = 'https://my-summary-app-backend.render.com';
-  const RENDER_BACKEND_URL = 'YOUR_RENDER_SERVICE_URL_HERE'; // <--- ここをあなたのRenderサービスのURLに置き換える！
-
+// ★ここにRenderサービスのURLを貼り付けてください
+// 例: const RENDER_BACKEND_URL = 'https://my-summary-app-backend.render.com';
+const RENDER_BACKEND_URL = 'https://my-summary-app.onrender.com'; // <-- このように修正
+// 
   // 要約ボタンがクリックされたときの処理
   const handleSummarize = async () => {
     // 入力テキストが空の場合は何もしない、または警告を出す
