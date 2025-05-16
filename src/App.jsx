@@ -10,10 +10,9 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   // RenderでデプロイしたバックエンドAPIのURL
-// ★ここにRenderサービスのURLを貼り付けてください
-// 例: const RENDER_BACKEND_URL = 'https://my-summary-app-backend.render.com';
-const RENDER_BACKEND_URL = 'https://my-summary-app.onrender.com'; // <-- このように修正
-// 
+  // ここにあなたのRenderサービスのURLを貼り付けます
+  const RENDER_BACKEND_URL = 'https://my-summary-app.onrender.com'; // ★あなたのRenderサービスのURLに置き換えてください (修正済み)
+
   // 要約ボタンがクリックされたときの処理
   const handleSummarize = async () => {
     // 入力テキストが空の場合は何もしない、または警告を出す
@@ -22,8 +21,8 @@ const RENDER_BACKEND_URL = 'https://my-summary-app.onrender.com'; // <-- この�
       return;
     }
 
-    // RenderサービスのURLが設定されているか確認
-    if (RENDER_BACKEND_URL === 'YOUR_RENDER_SERVICE_URL_HERE' || !RENDER_BACKEND_URL) {
+    // RenderサービスのURLが正しく設定されているか確認
+    if (!RENDER_BACKEND_URL || RENDER_BACKEND_URL === 'YOUR_RENDER_SERVICE_URL_HERE') {
         alert('RenderサービスのURLが設定されていません。src/App.jsx を確認してください。');
         console.error('Render backend URL is not set in src/App.jsx');
         return;

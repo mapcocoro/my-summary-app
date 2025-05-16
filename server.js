@@ -11,6 +11,7 @@ const port = process.env.PORT || 5000;
 // CORSミドルウェアを追加
 // これにより、異なるドメイン（Netlify/Vercelのフロントエンド）からのリクエストを受け付けられるようになります。
 // 必要に応じて、許可するオリジン（フロントエンドのドメイン）を制限することも可能です。
+// 例: cors({ origin: 'https://あなたのnetlifyサイト名.netlify.app' })
 app.use(cors());
 
 // JSON形式のリクエストボディをパースするためのミドルウェア
